@@ -8,27 +8,25 @@ class LineSplitStream extends stream.Transform {
     this.rows = '';
   }
 
-  _returnLineByLine(callback) {
+  _returnLineByLine() {
     const data = this.rows;
     const rowEndIndex = data.indexOf(os.EOL);
     if (rowEndIndex === -1) {
-      if (this.firstCall) {
-        callback();
-      }
       return;
     }
-    callback(null, data.slice(0, rowEndIndex));
+    this.push(data.slice(0, rowEndIndex));
     this.rows = data.slice(rowEndIndex + 1);
     if (this.firstCall) {
       this.firstCall = false;
     }
-    this._returnLineByLine(callback);
+    this._returnLineByLine();
   }
 
   _transform(chunk, encoding, callback) {
     this.rows += chunk.toString();
     this.firstCall = true;
-    this._returnLineByLine(callback);
+    this._returnLineByLine();
+    callback();
   }
 
   _flush(callback) {
