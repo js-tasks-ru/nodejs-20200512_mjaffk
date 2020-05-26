@@ -10,6 +10,10 @@ class LimitSizeStream extends stream.Transform {
     this.isObjectMode = !!options.readableObjectMode;
   }
 
+  on(...args) {
+    super.on(...args);
+  }
+
   _transform(chunk, encoding, callback) {
     if (this.isObjectMode) {
       this.size += 1;
