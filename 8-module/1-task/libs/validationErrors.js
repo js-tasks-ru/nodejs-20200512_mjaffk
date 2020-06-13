@@ -6,7 +6,11 @@ module.exports = async function handleMongooseValidationError(ctx, next) {
 
     ctx.status = 400;
 
-    const errors = {};
+    const errors = Object.entries(err.errors)
+        .reduce((obj, [key, value]) => ({
+          ...obj,
+          [key]: value.message,
+        }), {});
 
     for (const field of Object.keys(err.errors)) {
       errors[field] = err.errors[field].message;
