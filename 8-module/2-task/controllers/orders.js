@@ -24,6 +24,7 @@ module.exports.checkout = async function checkout(ctx, next) {
       subject: 'Подтверждение заказа',
     });
 
+    ctx.status = 200;
     ctx.body = {order: newOrder._id};
     return next();
   } catch (err) {
@@ -35,6 +36,8 @@ module.exports.getOrdersList = async function ordersList(ctx, next) {
   try {
     const orderList = await Order.find({user: ctx.user})
         .populate('product');
+
+    ctx.status = 200;
     ctx.body = {
       orders: orderList ? orderList.map(mapOrder) : [],
     };
